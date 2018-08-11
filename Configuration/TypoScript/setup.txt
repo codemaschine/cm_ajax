@@ -1,0 +1,27 @@
+
+
+
+## Ajax PAGE ##
+
+### ideas from http://www.typo3forum.net/forum/extension-modifizieren-neu-erstellen/46121-allgemein-extbase-ajax.html
+
+cmAjax = PAGE
+cmAjax {
+  # You don't need to change this typeNum
+  typeNum = 414864114
+  headerData >
+  config {
+    disableAllHeaderCode = 1
+    disablePrefixComment = 1
+    additionalHeaders = Content-type:text/xml
+    xhtml_cleaning = 0
+    no_cache = 1
+    admPanel = 0
+    debug = 0
+  }
+  10 = USER_INT
+  10 {
+    #userFunc = TYPO3\CMS\Extbase\Core\Bootstrap->run
+    userFunc = TYPO3\CmAjax\Utility\AjaxDispatcher->dispatch
+  }
+}
