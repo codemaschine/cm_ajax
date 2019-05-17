@@ -1,4 +1,15 @@
-# Prerequisites
+# cm_ajax
+
+This TYPO3-Extension provides some AJAX-based ViewHelpers similar to the default Fluid ViewHelpers ``<f:link.action>`` and ``<f:form>``. It users their syntax and extends it to provide some more attributes to handle the results returned by the AJAX
+call.
+
+## Installation
+
+* Download and install it from the TYPO3 Extension Repository or download it from here and put it into ``typo3conf/ext`` and install the extension.
+• In your root template, add the extension template ``cm_ajax`` to the static includes. It should be loaded before your own extension is loaded.
+
+
+## Prerequisites
 
 The following conditions must be met to use the Ajax-Extension for your extension:
 * Make sure to include the TypoScript Static Template in your site template.
@@ -27,13 +38,13 @@ If you want to work with the ``form`` ViewHelper or with an AJAX Post Request, i
 
 where you should insert the name of your form object here containing all the fields for your model instance. Also, you need to insert the ``@dontverifyrequesthash`` annotation into your ``createAction`` to get it to work.
 
-# ViewHelpers
+## ViewHelpers
 
 In the fluid templates and partials where you want to use the ajax-helpers, inlude this namespace at the beginning of the file:
 
     {namespace ajax=TYPO3\CmAjax\ViewHelpers}
 
-## ``link.action`` and ``form`` ViewHelper
+### ``link.action`` and ``form`` ViewHelper
 
 Now you can replace ``<f:link.action ...>`` with ``<ajax:link.action ... >`` and ``<f:form ...>`` with
 ``<ajax:form ...>`` to use the ajax functionality.
@@ -49,21 +60,21 @@ Both ViewHelpers extend their parent ViewHelpers with the following attributes:
 * ``loading``: Selector of element(s) which should be updated when startet the ajax call. Default is $update. loadingText: HTML text to replace with content of $loading, while the ajax call is loading. dataType: return type of ajax call. Default is “html”.
 * ``ajaxAction``: name of the action for the ajax call. By deflault it is the same as the action parameter.
 
-## ``isXhr`` or ``isAjax`` (alias) ViewHelper
+### ``isXhr`` or ``isAjax`` (alias) ViewHelper
 Returns true if it’s an AJAX Request.
 
-## ``contentUid`` ViewHelper
+### ``contentUid`` ViewHelper
 Returns the UID of the Content Element. Useful if you need to replace the content of a Content Element after an AJAX
 request and you need the element’s ID to create the CSS-Selector for this.
 
-# Controller Helpers
+## Controller Helpers
 To get some useful helpers in your Controller, extend your controller from ``\TYPO3\CmAjax\Controller\ApplicationController``.
 
-## ``isXhr()`` or ``isAjax()`` (alias)
+### ``isXhr()`` or ``isAjax()`` (alias)
 Parameters: None.
 Returns true if it’s an AJAX Request.
 
-## ``persistAll()``
+### ``persistAll()``
 Parameters: None. 
 Returns void.
 
