@@ -59,7 +59,7 @@ class FormViewHelper extends \TYPO3\CMS\Fluid\ViewHelpers\FormViewHelper {
    * @inject
    */
   protected $configurationManager;
- 
+
   /**
 	 * Initialize arguments.
 	 *
@@ -78,8 +78,8 @@ class FormViewHelper extends \TYPO3\CMS\Fluid\ViewHelpers\FormViewHelper {
 	  $this->registerArgument('ajaxAction', 'string', 'name of the action for the ajax call. By deflault it is the same as the action parameter.');
 	  parent::initializeArguments();
 	}
-	
-	
+
+
 	/**
 	 * Sets the "action" attribute of the form tag
 	 *
@@ -88,7 +88,7 @@ class FormViewHelper extends \TYPO3\CMS\Fluid\ViewHelpers\FormViewHelper {
 	protected function setFormActionUri()
 	{
 	  parent::setFormActionUri();
-	  
+
 	  $ajaxCall = AjaxBuilder::ajaxCall($this->configurationManager, $this->controllerContext,
 	      $this->arguments['action'],
 	      $this->arguments['arguments'],
@@ -117,13 +117,26 @@ class FormViewHelper extends \TYPO3\CMS\Fluid\ViewHelpers\FormViewHelper {
 	      $this->arguments['absolute'],
 	      $this->arguments['addQueryString'],
 	      $this->arguments['argumentsToBeExcludedFromQueryString']);
-	  
+
 	  if ($this->arguments['onsubmit'])
 	    $ajaxCall = "if (function(){ {$this->arguments['onsubmit']} }() === false) return false; ".$ajaxCall;
-	    
+
 	    $this->tag->addAttribute('onsubmit', $ajaxCall);
 	}
-	
+
+  /**
+	 * Sets hidden field for the language
+	 *
+	 * @return string
+	 */
+  protected function renderHiddenReferrerFields()
+  {
+    $result = parent::renderHiddenReferrerFields();
+    $result .= '<input type="hidden" name="L" value="' . $GLOBALS['TSFE']->sys_language_uid . '" />' . LF;
+
+    return $result;
+  }
+
 }
 
 ?>
