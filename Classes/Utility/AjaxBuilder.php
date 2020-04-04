@@ -178,14 +178,14 @@ class AjaxBuilder {
       $extension_prefix = 'tx_'.strtolower(str_replace('_', '', $extensionName)).'_'.strtolower($pluginName);
       $argument_prefix = $extension_prefix.'[arguments]';
 
-      $remoteUri = '/typo3/index.php?ajaxID=%2Fajax%2Fcm_ajax%2Fdispatch&ajaxToken=ff6d2901043f1aa3798384c007343e781fa67e9d&vendorName='.self::prepArg($vendorName).'&extensionName='.self::prepArg($extensionName).'&pluginName='.self::prepArg($pluginName).'&M='.self::prepArg($pluginName).'&controllerName='.self::prepArg($controller).'&actionName='.self::prepArg($ajaxAction);
+      $remoteUriArgs = '&vendorName='.self::prepArg($vendorName).'&extensionName='.self::prepArg($extensionName).'&pluginName='.self::prepArg($pluginName).'&M='.self::prepArg($pluginName).'&controllerName='.self::prepArg($controller).'&actionName='.self::prepArg($ajaxAction);
 
   	  foreach ($arguments as $key => $value) {
-  	  	$remoteUri .= '&arguments['.self::prepArg($key).']='.self::prepArg($value instanceof AbstractEntity ? $value->getUid() : $value);
+  	  	$remoteUriArgs .= '&arguments['.self::prepArg($key).']='.self::prepArg($value instanceof AbstractEntity ? $value->getUid() : $value);
   	  }
 
   	  // JQuery Framework
-  	  $ajaxCall = "$.ajax({ url: '$remoteUri'";
+  	  $ajaxCall = "$.ajax({ url: TYPO3.settings.ajaxUrls['cm_backend_router']+'$remoteUriArgs'";
   	  if ($includeFormData) {
 				$encodedElementsForData = array();
 			  foreach ($arguments as $key => $value) {
