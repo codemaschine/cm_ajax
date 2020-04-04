@@ -118,7 +118,7 @@ class ActionViewHelper extends AbstractAjaxViewHelper {
     $ajaxCall = AjaxBuilder::ajaxCall($this->configurationManager, $this->controllerContext,
         $this->arguments['action'],
         $this->arguments['arguments'],
-        'this',
+        $includeFormData,
         $this->arguments['controller'],
         $this->arguments['update'],
         $this->arguments['append'],

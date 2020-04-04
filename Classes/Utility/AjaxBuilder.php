@@ -52,6 +52,28 @@ class AjaxBuilder {
 				    array $argumentsToBeExcludedFromQueryString = array(),
 				    $return = false,
    					$vendorName = NULL) {
+    
+   					  
+	  $request = $controllerContext->getRequest();
+	  
+	  if(!$vendorName)
+	    $vendorName = $request->getControllerVendorName();
+	    
+    if(!$extensionName)
+      $extensionName = $request->getControllerExtensionName();
+      
+    if (!$controller)
+      $controller = $request->getControllerName();
+      
+    if (!$pluginName)
+      $pluginName = $request->getPluginName();
+      
+    if (!$ajaxAction)
+      $ajaxAction = $action ? $action : $request->getControllerActionName();
+    
+    $extension_prefix = 'tx_'.strtolower(str_replace('_', '', $extensionName)).'_'.strtolower(str_replace('_', '', $pluginName));
+    $argument_prefix = $extension_prefix.'[arguments]';
+      
 
 
     if (TYPO3_MODE === 'FE') {
@@ -73,22 +95,7 @@ class AjaxBuilder {
   			->uriFor($ajaxAction ? $ajaxAction : $action, $arguments, $controller, $extensionName, $pluginName);
 	  	*/
 
-    	$request = $controllerContext->getRequest();
-
-    	if(!$vendorName)
-    		$vendorName = $request->getControllerVendorName();
-
-    	if(!$extensionName)
-    		$extensionName = $request->getControllerExtensionName();
-
-    	if (!$controller)
-    		$controller = $request->getControllerName();
-
-    	if (!$pluginName)
-    		$pluginName = $request->getPluginName();
-
-    	if (!$ajaxAction)
-    		$ajaxAction = $action ? $action : $request->getControllerActionName();
+    	
 
 
     	if ($_SERVER['HTTP_X_REQUESTED_WITH'] != 'XMLHttpRequest') {
@@ -102,10 +109,7 @@ class AjaxBuilder {
     	else
     		$cUid = t3lib_div::_GP('cUid');
 
-
-    	$extension_prefix = 'tx_'.strtolower(str_replace('_', '', $extensionName)).'_'.strtolower(str_replace('_', '', $pluginName));
-			$argument_prefix = $extension_prefix.'[arguments]';
-
+    	
     	$remoteUri = '/index.php?eID=cmAjaxDispatcher&id='.$GLOBALS['TSFE']->id.'&request[vendorName]='.self::prepArg($vendorName).'&request[extensionName]='.self::prepArg($extensionName).'&request[pluginName]='.self::prepArg($pluginName).'&request[controller]='.self::prepArg($controller).'&request[action]='.self::prepArg($ajaxAction).'&cUid='.self::prepArg($cUid);
 
     	foreach ($additionalParams as $key => $value) {
@@ -170,40 +174,25 @@ class AjaxBuilder {
   		$ajaxCall.= ", dataType: '$dataType' }); return ".($return ? "true" : "false").";";
 	  }
     else {
+      
+      $extension_prefix = 'tx_'.strtolower(str_replace('_', '', $extensionName)).'_'.strtolower($pluginName);
+      $argument_prefix = $extension_prefix.'[arguments]';
 
-      $request = $controllerContext->getRequest();
-
-      if(!$vendorName)
-    		$vendorName = $request->getControllerVendorName();
-
-    	if(!$extensionName)
-        $extensionName = $request->getControllerExtensionName();
-
-      if (!$controller)
-        $controller = $request->getControllerName();
-
-      if (!$pluginName)
-        $pluginName = $request->getPluginName();
-
-      if (!$ajaxAction)
-        $ajaxAction = $action ? $action : $request->getControllerActionName();
-
-
-  	  $remoteUri = 'ajax.php?ajaxID=cmBeAjaxDispatcher&vendorName='.self::prepArg($vendorName).'&extensionName='.self::prepArg($extensionName).'&pluginName='.self::prepArg($pluginName).'&M='.self::prepArg($pluginName).'&controllerName='.self::prepArg($controller).'&actionName='.self::prepArg($ajaxAction);
+      $remoteUri = '/typo3/index.php?ajaxID=%2Fajax%2Fcm_ajax%2Fdispatch&ajaxToken=ff6d2901043f1aa3798384c007343e781fa67e9d&vendorName='.self::prepArg($vendorName).'&extensionName='.self::prepArg($extensionName).'&pluginName='.self::prepArg($pluginName).'&M='.self::prepArg($pluginName).'&controllerName='.self::prepArg($controller).'&actionName='.self::prepArg($ajaxAction);
 
   	  foreach ($arguments as $key => $value) {
   	  	$remoteUri .= '&arguments['.self::prepArg($key).']='.self::prepArg($value instanceof AbstractEntity ? $value->getUid() : $value);
   	  }
 
   	  // JQuery Framework
-  	  $ajaxCall = "jQuery.ajax({ url: '$remoteUri'";
+  	  $ajaxCall = "$.ajax({ url: '$remoteUri'";
   	  if ($includeFormData) {
 				$encodedElementsForData = array();
 			  foreach ($arguments as $key => $value) {
-			    array_push($encodedElementsForData, "{name: \"".$extension_prefix."[$key]\", value: \"".urlencode($value instanceof AbstractEntity ? $value->getUid() : $value)."\"}");
+			    array_push($encodedElementsForData, "{name: '".$extension_prefix."[$key]', value: '".urlencode($value instanceof AbstractEntity ? $value->getUid() : $value)."'}");
 				}
-				$ajaxCall.= ", type: 'POST', data: jQuery.merge(jQuery(this)".($includeFormData === 'this' ? '' : ".parents('form').first()").".serializeArray(), [".implode(', ', $encodedElementsForData)."])";
-  	  	//$ajaxCall.= ", type: 'POST', data: jQuery(this)".($includeFormData === 'this' ? '' : ".parents('form').first()").".serializeArray()";
+				$ajaxCall.= ", type: 'POST', data: $.merge($(this)".($includeFormData === 'this' ? '' : ".parents('form').first()").".serializeArray(), [".implode(', ', $encodedElementsForData)."])";
+  	  	//$ajaxCall.= ", type: 'POST', data: $(this)".($includeFormData === 'this' ? '' : ".parents('form').first()").".serializeArray()";
 			} /*else if (!empty($arguments)) {
   	  	$encodedElements = array();
   	  	foreach ($arguments as $key => $value)
@@ -213,22 +202,22 @@ class AjaxBuilder {
   	  if ($loading || $loadingText) {
   	  	$ajaxCall.= ", beforeSend: function(xhr) { ";
   	  	if ($loading)
-  	  		$ajaxCall .= "jQuery('$loading').show();";
+  	  		$ajaxCall .= "$('$loading').show();";
   	  	if ($loadingText)
-  	  		$ajaxCall .= "jQuery('".($loading ? $loading : $update)."').html('".str_replace("'", "\\'", $loadingText)."');";
+  	  		$ajaxCall .= "$('".($loading ? $loading : $update)."').html('".str_replace("'", "\\'", $loadingText)."');";
   	  	$ajaxCall.=  " }";
 
   	  	if ($loading)
-  	  		$ajaxCall .= ", complete: function(xhr) { jQuery('$loading').hide(); }";
+  	  		$ajaxCall .= ", complete: function(xhr) { $('$loading').hide(); }";
   	  }
   	  if ($update || $updateJS) {
   	  	$ajaxCall.= ", success: function(data) { ";
   	  	if ($update)
-  	  		$ajaxCall .= " jQuery('$update').html(data); var dom = jQuery(data); dom.find('script').each(function(){ jQuery.globalEval(this.text || this.textContent || this.innerHTML || '');});";
+  	  		$ajaxCall .= " $('$update').html(data); var dom = $(data); dom.find('script').each(function(){ $.globalEval(this.text || this.textContent || this.innerHTML || '');});";
   	  	if ($append)
-  	  	  $ajaxCall .= " jQuery('$append').append(data);";
+  	  	  $ajaxCall .= " $('$append').append(data);";
   	  	if ($prepend)
-  	  	  $ajaxCall .= " jQuery('$prepend').prepend(data);";
+  	  	  $ajaxCall .= " $('$prepend').prepend(data);";
   	  	if ($updateJS)
   	  		$ajaxCall .=  $updateJS;
   	  		$ajaxCall.=  " }";
@@ -236,7 +225,7 @@ class AjaxBuilder {
   	  if ($update || $error || $errorJS) {
   	  $ajaxCall.= ", error: function(xhr, textStatus, errorThrown) { ";
   			if ($update && empty($errorJS) || $error)
-  	    			$ajaxCall.= "jQuery('".($error ? $error : $update)."').html(xhr); ";
+  	    			$ajaxCall.= "$('".($error ? $error : $update)."').html(xhr); ";
   	    					if ($errorJS)
   				$ajaxCall.= $errorJS;
   	    				$ajaxCall.=  " }";
