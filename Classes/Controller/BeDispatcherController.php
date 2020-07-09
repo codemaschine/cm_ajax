@@ -29,6 +29,8 @@ use \TYPO3\CMS\Core\Utility\GeneralUtility as t3lib_div;
 use TYPO3\CMS\Extbase\Mvc\Dispatcher;
 use TYPO3\CMS\Extbase\Object\ObjectManager;
 use TYPO3\CMS\Extbase\Mvc\Web\Request;
+use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\ServerRequestInterface;
 
 /**
 * Utility to include defined frontend libraries as jQuery and related CSS
@@ -116,12 +118,17 @@ class BeDispatcherController {
      * Called by ajax.php / eID.php
      * Builds an extbase context and returns the response
      */
-    public function dispatch() {
-        $this->prepareCallArguments();
+    public function dispatch(
+        ServerRequestInterface $mwRequest,
+        \TYPO3\CMS\Core\Http\Response $mwResponse
+        ) {
+        
+          $this->prepareCallArguments();
          
         $configuration = array();
         $configuration['extensionName'] = $this->extensionName;
         $configuration['pluginName'] = $this->pluginName;
+        $configuration['vendorName'] = $this->vendorName;
         if (!empty($this->moduleName)) {
           define('TYPO3_MODE','BE');
           $configuration['pluginName'] = $this->moduleName;
@@ -148,16 +155,18 @@ class BeDispatcherController {
         $dispatcher =  $this->objectManager->get(\TYPO3\CMS\Extbase\Mvc\Dispatcher::class);
         $dispatcher->dispatch($request, $response);
         
+        $response->setHeader('Content-Type','text/html; charset=UTF-8');
         $response->sendHeaders();
         echo $response->getContent();
          
         $this->cleanShutDown();
+        return $mwResponse->withHeader('Content-Type','text/html; charset=UTF-8');
     }
  
      
     protected function cleanShutDown() {
         $this->objectManager->get('TYPO3\\CMS\\Extbase\\Persistence\\Generic\\PersistenceManager')->persistAll();
-        $this->objectManager->get('TYPO3\\CMS\\Extbase\\Reflection\\ReflectionService')->shutdown();
+        //$this->objectManager->get('TYPO3\\CMS\\Extbase\\Reflection\\ReflectionService')->shutdown();
     }
      
      

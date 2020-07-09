@@ -56,9 +56,18 @@ class FormViewHelper extends \TYPO3\CMS\Fluid\ViewHelpers\FormViewHelper {
 
 	/**
    * @var \TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface
-   * @inject
    */
   protected $configurationManager;
+  
+  /**
+   * @param \TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface $configurationManager
+   */
+  public function injectConfigurationManager(\TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface $configurationManager)
+  {
+    $this->configurationManager = $configurationManager;
+  }
+  
+  
 
   /**
 	 * Initialize arguments.
@@ -89,7 +98,7 @@ class FormViewHelper extends \TYPO3\CMS\Fluid\ViewHelpers\FormViewHelper {
 	{
 	  parent::setFormActionUri();
 
-	  $ajaxCall = AjaxBuilder::ajaxCall($this->configurationManager, $this->controllerContext,
+	  $ajaxCall = AjaxBuilder::ajaxCall($this->configurationManager, $this->renderingContext->getControllerContext(),
 	      $this->arguments['action'],
 	      $this->arguments['arguments'],
 	      'this',
@@ -106,17 +115,17 @@ class FormViewHelper extends \TYPO3\CMS\Fluid\ViewHelpers\FormViewHelper {
 	      $this->arguments['ajaxAction'],
 	      $this->arguments['extensionName'],
 	      $this->arguments['pluginName'],
-	      $this->arguments['pageUid'],
-	      $this->arguments['pageType'],
-	      $this->arguments['noCache'],
-	      $this->arguments['noCacheHash'],
-	      $this->arguments['section'],
-	      $this->arguments['format'],
-	      $this->arguments['linkAccessRestrictedPages'],
-	      $this->arguments['additionalParams'],
-	      $this->arguments['absolute'],
-	      $this->arguments['addQueryString'],
-	      $this->arguments['argumentsToBeExcludedFromQueryString']);
+	      (int)$this->arguments['pageUid'] ?: null,
+	      (int)$this->arguments['pageType'],
+	      (bool)$this->arguments['noCache'],
+	      (bool)$this->arguments['noCacheHash'],
+	      (string)$this->arguments['section'],
+	      (string)$this->arguments['format'],
+	      (bool)$this->arguments['linkAccessRestrictedPages'],
+	      (array)$this->arguments['additionalParams'],
+	      (bool)$this->arguments['absolute'],
+	      (bool)$this->arguments['addQueryString'],
+	      (array)$this->arguments['argumentsToBeExcludedFromQueryString']);
 
 	  if ($this->arguments['onsubmit'])
 	    $ajaxCall = "if (function(){ {$this->arguments['onsubmit']} }() === false) return false; ".$ajaxCall;
