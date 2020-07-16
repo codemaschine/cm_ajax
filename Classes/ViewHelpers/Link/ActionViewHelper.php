@@ -67,6 +67,7 @@ class ActionViewHelper extends AbstractAjaxViewHelper
         $this->registerTagAttribute('target', 'string', 'Specifies where to open the linked document');
         $this->registerArgument('action', 'string', 'Target action');
         $this->registerArgument('controller', 'string', 'Target controller. If NULL current controllerName is used');
+        $this->registerArgument('includeFormData', 'string', 'Serializes the form data and use it instead of arguments. "true" means selecting the parents form node, "this" or a variable name is giving the form node itself, any other string means a CSS-Selector to select the form to serialize the data. Default is "false".', false, false);
         $this->registerArgument('extensionName', 'string', 'Target Extension Name (without "tx_" prefix and no underscores). If NULL the current extension name is used');
         $this->registerArgument('pluginName', 'string', 'Target plugin. If empty, the current plugin name is used');
         $this->registerArgument('pageUid', 'int', 'Target page. See TypoLink destination');
@@ -99,22 +100,32 @@ class ActionViewHelper extends AbstractAjaxViewHelper
     public function render()
     {
         $action = $this->arguments['action'];
+        $arguments = (array) $this->arguments['arguments'];
+        $includeFormData = $this->arguments['includeFormData'];
         $controller = $this->arguments['controller'];
+        $update = $this->arguments['update'];
+        $append = $this->arguments['append'];
+        $prepend = $this->arguments['prepend'];
+        $updateJS = $this->arguments['updateJS'];
+        $error = $this->arguments['error'];
+        $errorJS = $this->arguments['errorJS'];
+        $loading = $this->arguments['loading'];
+        $ajaxAction = $this->arguments['ajaxAction'];
         $extensionName = $this->arguments['extensionName'];
         $pluginName = $this->arguments['pluginName'];
-        $pageUid = (int)$this->arguments['pageUid'] ?: null;
-        $pageType = (int)$this->arguments['pageType'];
-        $noCache = (bool)$this->arguments['noCache'];
-        $noCacheHash = (bool)$this->arguments['noCacheHash'];
-        $section = (string)$this->arguments['section'];
-        $format = (string)$this->arguments['format'];
-        $linkAccessRestrictedPages = (bool)$this->arguments['linkAccessRestrictedPages'];
-        $additionalParams = (array)$this->arguments['additionalParams'];
-        $absolute = (bool)$this->arguments['absolute'];
-        $addQueryString = (bool)$this->arguments['addQueryString'];
-        $argumentsToBeExcludedFromQueryString = (array)$this->arguments['argumentsToBeExcludedFromQueryString'];
+        $pageUid = (int) $this->arguments['pageUid'];
+        $pageType = (int) $this->arguments['pageType'];
+        $noCache = (boolean) $this->arguments['noCache'];
+        $noCacheHash = (boolean) $this->arguments['noCacheHash'];
+        $section = $this->arguments['section'];
+        $format = $this->arguments['format'];
+        $linkAccessRestrictedPages = (boolean) $this->arguments['linkAccessRestrictedPages'];
+        $additionalParams = (array) $this->arguments['additionalParams'];
+        $absolute = (boolean) $this->arguments['absolute'];
+        $addQueryString = (boolean) $this->arguments['addQueryString'];
+        $argumentsToBeExcludedFromQueryString = (array) $this->arguments['argumentsToBeExcludedFromQueryString'];
         $addQueryStringMethod = $this->arguments['addQueryStringMethod'];
-        $parameters = $this->arguments['arguments'];
+      
         $uriBuilder = $this->renderingContext->getControllerContext()->getUriBuilder();
         $uri = $uriBuilder
             ->reset()
@@ -130,42 +141,13 @@ class ActionViewHelper extends AbstractAjaxViewHelper
             ->setAddQueryString($addQueryString)
             ->setArgumentsToBeExcludedFromQueryString($argumentsToBeExcludedFromQueryString)
             ->setAddQueryStringMethod($addQueryStringMethod)
-            ->uriFor($action, $parameters, $controller, $extensionName, $pluginName);
+            ->uriFor($action, $arguments, $controller, $extensionName, $pluginName);
         if ($uri === '') {
             return $this->renderChildren();
         }
         $this->tag->addAttribute('href', $uri);
         
-        
-        $ajaxCall = AjaxBuilder::ajaxCall($this->configurationManager, $this->renderingContext->getControllerContext(),
-            $action,
-            $this->arguments['arguments'],
-            'this',
-            $this->arguments['controller'],
-            $this->arguments['update'],
-            $this->arguments['append'],
-            $this->arguments['prepend'],
-            $this->arguments['updateJS'],
-            $this->arguments['error'],
-            $this->arguments['errorJS'],
-            $this->arguments['loading'],
-            $this->arguments['loadingText'],
-            $this->arguments['dataType'],
-            $this->arguments['ajaxAction'],
-            $this->arguments['extensionName'],
-            $this->arguments['pluginName'],
-            $pageUid,
-            $pageType,
-            $noCache,
-            $noCacheHash,
-            $this->arguments['section'],
-            $this->arguments['format'],
-            $this->arguments['linkAccessRestrictedPages'],
-            $additionalParams,
-            $absolute,
-            $addQueryString,
-            $argumentsToBeExcludedFromQueryString);
-        
+        $ajaxCall = AjaxBuilder::ajaxCall($this->configurationManager, $this->renderingContext->getControllerContext(), $action, $arguments, $includeFormData, $controller, $update, $updateJS, $error, $errorJS, $loading, $loadingText, $dataType, $ajaxAction, $extensionName, $pluginName, $pageUid, $pageType, $noCache, $noCacheHash, $section, $format, $linkAccessRestrictedPages, $additionalParams, $absolute, $addQueryString, $argumentsToBeExcludedFromQueryString);
         
         $onclick = $this->tag->getAttribute('onclick');
         

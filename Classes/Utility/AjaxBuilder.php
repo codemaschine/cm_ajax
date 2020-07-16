@@ -131,7 +131,14 @@ class AjaxBuilder {
 			  foreach ($arguments as $key => $value) {
 			    array_push($encodedElementsForData, "{name: \"".$extension_prefix."[$key]\", value: \"".urlencode($value instanceof AbstractEntity ? $value->getUid() : $value)."\"}");
 				}
-  		  $ajaxCall.= ", type: 'POST', data: $.merge($(this)".($includeFormData === 'this' ? '' : ".parents('form').first()").".serializeArray(), [".implode(', ', $encodedElementsForData)."])";
+				if ($includeFormData === 'this' || preg_match('/^[a-zA-Z_\$]+[a-zA-Z0-9_\$]*$/', $includeFormData))
+				  $formFinder = "$($includeFormData)";
+			  elseif (is_bool($includeFormData) || is_int($includeFormData) || $includeFormData === 'true' || $includeFormData === '1')
+			    $formFinder = "$(this).parents('form').first()";
+			  else
+			    $formFinder = "$('$includeFormData')";
+			    
+			  $ajaxCall.= ", type: 'POST', data: $.merge($formFinder.serializeArray(), [".implode(', ', $encodedElementsForData)."])";
   		} else if (!empty($arguments)) {
   		  $encodedElements = array();
   		  foreach ($arguments as $key => $value)

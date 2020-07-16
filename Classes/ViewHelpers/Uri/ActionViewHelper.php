@@ -30,7 +30,7 @@ class ActionViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHelp
   public function initializeArguments() {
     $this->registerArgument('action', 'string', 'Target action', false, null);
     $this->registerArgument('arguments', 'array', 'Arguments', false, []);
-    $this->registerArgument('includeFormData', 'boolean', '(Alpha, FE only) Serializes the form data and use it instead of arguments. Default is FALSE.', false, false);
+    $this->registerArgument('includeFormData', 'string', 'Serializes the form data and use it instead of arguments. "true" means selecting the parents form node, "this" or a variable name is giving the form node itself, any other string means a CSS-Selector to select the form to serialize the data. Default is "false".', false, false);
     $this->registerArgument('controller', 'string', 'Target controller. If NULL current controllerName is used', false, null);
     $this->registerArgument('update', 'string', 'Selector of element(s) which should be updated on success of ajax call.', false, null);
     $this->registerArgument('append', 'string', 'Selector of element(s) in which the result date should be appened on success of ajax call.', false, null);
@@ -66,7 +66,7 @@ class ActionViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHelp
   /**
    * @param string $action Target action
    * @param array $arguments Arguments
-   * @param boolean $includeFormData (Alpha, FE only) Serializes the form data and use it instead of arguments. Default is FALSE.
+   * @param string $includeFormData Serializes the form data and use it instead of arguments. "true" means selecting the parents form node, "this" or a variable name is giving the form node itself, any other string means a CSS-Selector to select the form to serialize the data. Default is "false".
    * @param string $controller Target controller. If NULL current controllerName is used
    * @param string $update Selector of element(s) which should be updated on success of ajax call.
    * @param string $append Selector of element(s) in which the result date should be appened on success of ajax call.
@@ -99,7 +99,7 @@ class ActionViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHelp
     
     $action = $this->arguments['action'];
     $arguments = (array) $this->arguments['arguments'];
-    $includeFormData = (boolean) $this->arguments['includeFormData'];
+    $includeFormData = $this->arguments['includeFormData'];
     $controller = $this->arguments['controller'];
     $update = $this->arguments['update'];
     $append = $this->arguments['append'];

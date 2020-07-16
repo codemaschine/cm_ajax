@@ -15,6 +15,7 @@ namespace TYPO3\CmAjax\ViewHelpers\Onclick;
  *                                                                        */
 use \TYPO3\CMS\Core\Utility\GeneralUtility as t3lib_div;
 use \TYPO3\CmAjax\ViewHelpers\AbstractAjaxViewHelper;
+use TYPO3\CmAjax\Utility\AjaxBuilder;
 
 /**
  * A view helper for creating remote Uri to extbase actions in onclick eventhandlers
@@ -31,7 +32,7 @@ class ActionViewHelper extends AbstractAjaxViewHelper {
 	public function initializeArguments() {
         $this->registerArgument('action', 'string', 'Target action', false, null);
         $this->registerArgument('arguments', 'array', 'Arguments', false, array());
-        $this->registerArgument('includeFormData', 'boolean', '(Alpha, FE only) Serializes the form data and use it instead of arguments. Default is FALSE.', false, false);
+        $this->registerArgument('includeFormData', 'string', 'Serializes the form data and use it instead of arguments. "true" means selecting the parents form node, "this" or a variable name is giving the form node itself, any other string means a CSS-Selector to select the form to serialize the data. Default is "false".', false, false);
         $this->registerArgument('controller', 'string', 'Target controller. If NULL current controllerName is used', false, null);
         $this->registerArgument('update', 'string', 'Selector of element(s) which should be updated on success of ajax call.', false, null);
         $this->registerArgument('updateJS', 'string', 'JavaScript that should be executed on success of ajax call (after updating the Element with ID $update with the responseText, if $update is given). Response objects \'xhr\' and \'json\' are available.', false, null);
@@ -54,13 +55,13 @@ class ActionViewHelper extends AbstractAjaxViewHelper {
         $this->registerArgument('absolute', 'boolean', 'If set, the URI of the rendered link is absolute', false, boolean);
         $this->registerArgument('addQueryString', 'boolean', 'If set, the current query parameters will be kept in the URI', false, boolean);
         $this->registerArgument('argumentsToBeExcludedFromQueryString', 'array', 'arguments to be removed from the URI. Only active if $addQueryString = TRUE', false, array());
-        $this->registerArgument('return', 'string', 'Rendered link', false, '');
+        $this->registerArgument('return', 'boolean', 'Rendered link', false, false);
 	}
 	
 	/**
 	 * @param string $action Target action
 	 * @param array $arguments Arguments
-	 * @param boolean $includeFormData (Alpha, FE only) Serializes the form data and use it instead of arguments. Default is FALSE.
+	 * @param string $includeFormData Serializes the form data and use it instead of arguments. "true" means selecting the parents form node, "this" or a variable name is giving the form node itself, any other string means a CSS-Selector to select the form to serialize the data. Default is "false".
 	 * @param string $controller Target controller. If NULL current controllerName is used
 	 * @param string $update ID of element which should be updated on success of ajax call.
 	 * @param string $updateJS JavaScript that should be executed on success of ajax call (after updating the Element with ID $update with the responseText, if $update is given). Response objects 'xhr' and 'json' are available.
@@ -90,32 +91,34 @@ class ActionViewHelper extends AbstractAjaxViewHelper {
 	 */
 	public function render() {
 	
-        $action = $this->arguments['action'];
-        $arguments = $this->arguments['arguments'];
-        $includeFormData = $this->arguments['includeFormData'];
-        $controller = $this->arguments['controller'];
-        $update = $this->arguments['update'];
-        $updateJS = $this->arguments['updateJS'];
-        $error = $this->arguments['error'];
-        $errorJS = $this->arguments['errorJS'];
-        $loading = $this->arguments['loading'];
-        $ajaxAction = $this->arguments['ajaxAction'];
-        $extensionName = $this->arguments['extensionName'];
-        $pluginName = $this->arguments['pluginName'];
-        $pageUid = $this->arguments['pageUid'];
-        $pageType = $this->arguments['pageType'];
-        $noCache = $this->arguments['noCache'];
-        $noCacheHash = $this->arguments['noCacheHash'];
-        $section = $this->arguments['section'];
-        $format = $this->arguments['format'];
-        $linkAccessRestrictedPages = $this->arguments['linkAccessRestrictedPages'];
-        $additionalParams = $this->arguments['additionalParams'];
-        $absolute = $this->arguments['absolute'];
-        $addQueryString = $this->arguments['addQueryString'];
-        $argumentsToBeExcludedFromQueryString = $this->arguments['argumentsToBeExcludedFromQueryString'];
-        $return = $this->arguments['return'];	  
-	  	
-	  $ajaxCall = $this->ajaxCall($this->configurationManager, $this->renderingContext->getControllerContext(), $action, $arguments, $includeFormData, $controller, $update, $updateJS, $error, $errorJS, $loading, $loadingText, $dataType, $ajaxAction, $extensionName, $pluginName, $pageUid, $pageType, $noCache, $noCacheHash, $section, $format, $linkAccessRestrictedPages, $additionalParams, $absolute, $addQueryString, $argumentsToBeExcludedFromQueryString, $return);
+	  $action = $this->arguments['action'];
+	  $arguments = (array) $this->arguments['arguments'];
+	  $includeFormData = $this->arguments['includeFormData'];
+	  $controller = $this->arguments['controller'];
+	  $update = $this->arguments['update'];
+	  $append = $this->arguments['append'];
+	  $prepend = $this->arguments['prepend'];
+	  $updateJS = $this->arguments['updateJS'];
+	  $error = $this->arguments['error'];
+	  $errorJS = $this->arguments['errorJS'];
+	  $loading = $this->arguments['loading'];
+	  $ajaxAction = $this->arguments['ajaxAction'];
+	  $extensionName = $this->arguments['extensionName'];
+	  $pluginName = $this->arguments['pluginName'];
+	  $pageUid = (int) $this->arguments['pageUid'];
+	  $pageType = (int) $this->arguments['pageType'];
+	  $noCache = (boolean) $this->arguments['noCache'];
+	  $noCacheHash = (boolean) $this->arguments['noCacheHash'];
+	  $section = $this->arguments['section'];
+	  $format = $this->arguments['format'];
+	  $linkAccessRestrictedPages = (boolean) $this->arguments['linkAccessRestrictedPages'];
+	  $additionalParams = (array) $this->arguments['additionalParams'];
+	  $absolute = (boolean) $this->arguments['absolute'];
+	  $addQueryString = (boolean) $this->arguments['addQueryString'];
+	  $argumentsToBeExcludedFromQueryString = (array) $this->arguments['argumentsToBeExcludedFromQueryString'];
+	  $return = (boolean) $this->arguments['return'];
+	  
+	  $ajaxCall = AjaxBuilder::ajaxCall($this->configurationManager, $this->renderingContext->getControllerContext(), $action, $arguments, $includeFormData, $controller, $update, $append, $prepend, $updateJS, $error, $errorJS, $loading, $loadingText, $dataType, $ajaxAction, $extensionName, $pluginName, $pageUid, $pageType, $noCache, $noCacheHash, $section, $format, $linkAccessRestrictedPages, $additionalParams, $absolute, $addQueryString, $argumentsToBeExcludedFromQueryString, $return);
 	  
 		return $ajaxCall;
 	}
