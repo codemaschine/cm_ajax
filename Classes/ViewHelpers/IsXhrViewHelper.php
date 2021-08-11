@@ -2,7 +2,7 @@
 namespace TYPO3\CmAjax\ViewHelpers;
 
 
-class IsXhrViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHelper {
+class IsXhrViewHelper extends \TYPO3Fluid\Fluid\Core\ViewHelper\AbstractViewHelper {
 
   /**
    * @var bool

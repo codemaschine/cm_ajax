@@ -3,6 +3,6 @@ if (!defined('TYPO3_MODE')) {
 	die ('Access denied.');
 }
 
-\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addStaticFile($_EXTKEY, 'Configuration/TypoScript', 'Extbase / Fluid Ajax');
+\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addStaticFile('cm_ajax', 'Configuration/TypoScript', 'Extbase / Fluid Ajax');
 
 ?>

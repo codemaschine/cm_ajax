@@ -26,6 +26,7 @@ namespace TYPO3\CmAjax\Controller;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 use \TYPO3\CMS\Core\Utility\GeneralUtility as t3lib_div;
+use TYPO3\CMS\Extbase\Annotation\Inject;
 
 /**
  *
@@ -40,7 +41,7 @@ class ApplicationController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionCont
 	* persistence manager
 	*
 	* @var \TYPO3\CMS\Extbase\Persistence\PersistenceManagerInterface
-	* @inject
+	* @Inject
 	*/
 	protected $persistenceManager;
 	

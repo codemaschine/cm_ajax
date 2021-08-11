@@ -56,9 +56,6 @@ class AjaxBuilder {
    					  
 	  $request = $controllerContext->getRequest();
 	  
-	  if(!$vendorName)
-	    $vendorName = $request->getControllerVendorName();
-	    
     if(!$extensionName)
       $extensionName = $request->getControllerExtensionName();
       

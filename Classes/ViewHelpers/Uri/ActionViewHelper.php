@@ -14,13 +14,14 @@ namespace TYPO3\CmAjax\ViewHelpers\Uri;
  * Public License for more details.                                       *
  *                                                                        */
 use TYPO3\CmAjax\Utility\AjaxBuilder;
+use TYPO3\CMS\Extbase\Annotation\Inject;
 
 /**
  * A view helper for creating remote Uri to extbase actions (JavaScript required, no fallback)
  *
  * @license http://www.gnu.org/licenses/lgpl.html GNU Lesser General Public License, version 3 or later
  */
-class ActionViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHelper {
+class ActionViewHelper extends \TYPO3Fluid\Fluid\Core\ViewHelper\AbstractViewHelper {
   
   /**
    * @var bool
@@ -59,7 +60,7 @@ class ActionViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHelp
   
   /**
    * @var \TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface
-   * @inject
+   * @Inject
    */
   protected $configurationManager;
   

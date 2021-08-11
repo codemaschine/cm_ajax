@@ -16,6 +16,7 @@ namespace TYPO3\CmAjax\ViewHelpers\Onclick;
 use \TYPO3\CMS\Core\Utility\GeneralUtility as t3lib_div;
 use \TYPO3\CmAjax\ViewHelpers\AbstractAjaxViewHelper;
 use TYPO3\CmAjax\Utility\AjaxBuilder;
+use TYPO3\CMS\Extbase\Annotation\Inject;
 
 /**
  * A view helper for creating remote Uri to extbase actions in onclick eventhandlers
@@ -25,7 +26,7 @@ use TYPO3\CmAjax\Utility\AjaxBuilder;
 class ActionViewHelper extends AbstractAjaxViewHelper {
 	/**
 	 * @var \TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface
-	 * @inject
+	 * @Inject
 	 */
 	protected $configurationManager;
 	

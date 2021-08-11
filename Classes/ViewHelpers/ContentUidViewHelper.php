@@ -4,7 +4,7 @@ namespace TYPO3\CmAjax\ViewHelpers;
 // http://www.felixnagel.com/blog/artikel/2012/07/20/typo3-use-content-element-uid-in-extbase-fluid-templates/
 
 
-class ContentUidViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHelper {
+class ContentUidViewHelper extends \TYPO3Fluid\Fluid\Core\ViewHelper\AbstractViewHelper {
 
   /**
    * @var bool

@@ -25,12 +25,10 @@ namespace TYPO3\CmAjax\Controller;
 *
 * This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
-use \TYPO3\CMS\Core\Utility\GeneralUtility as t3lib_div; 
-use TYPO3\CMS\Extbase\Mvc\Dispatcher;
+use \TYPO3\CMS\Core\Utility\GeneralUtility as t3lib_div;
 use TYPO3\CMS\Extbase\Object\ObjectManager;
-use TYPO3\CMS\Extbase\Mvc\Web\Request;
-use Psr\Http\Message\ResponseInterface;
-use Psr\Http\Message\ServerRequestInterface;
+use TYPO3\CMS\Extbase\Mvc\Request;
+use TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface;
 
 /**
 * Utility to include defined frontend libraries as jQuery and related CSS
@@ -119,8 +117,7 @@ class BeDispatcherController {
      * Builds an extbase context and returns the response
      */
     public function dispatch(
-        ServerRequestInterface $mwRequest,
-        \TYPO3\CMS\Core\Http\Response $mwResponse
+        \TYPO3\CMS\Core\Http\ServerRequest $mwResponse
         ) {
         
           $this->prepareCallArguments();
@@ -150,17 +147,25 @@ class BeDispatcherController {
         $this->objectManager = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\\CMS\\Extbase\\Object\\ObjectManager');
         
         $request = $this->buildRequest();
-        $response = $this->objectManager->get(\TYPO3\CMS\Extbase\Mvc\Web\Response::class);
+        $response = $this->objectManager->get(\TYPO3\CMS\Extbase\Mvc\Response::class);
         
-        $dispatcher =  $this->objectManager->get(\TYPO3\CMS\Extbase\Mvc\Dispatcher::class);
+        $dispatcher = $this->objectManager->get(\TYPO3\CMS\Extbase\Mvc\Dispatcher::class);
         $dispatcher->dispatch($request, $response);
         
         $response->setHeader('Content-Type','text/html; charset=UTF-8');
         $response->sendHeaders();
-        echo $response->getContent();
          
         $this->cleanShutDown();
-        return $mwResponse->withHeader('Content-Type','text/html; charset=UTF-8');
+        $responsePSR = new \TYPO3\CMS\Core\Http\Response(
+            'php://temp',
+            $response->getStatusCode(),
+            $response->getUnpreparedHeaders()
+          );
+        $content = $response->getContent();
+        if ($content !== null) {
+          $responsePSR->getBody()->write($content);
+        }
+        return $responsePSR;
     }
  
      
@@ -176,14 +181,21 @@ class BeDispatcherController {
      * @return Request $request
      */
     protected function buildRequest() {
-        $request = $this->objectManager->get(\TYPO3\CMS\Extbase\Mvc\Web\Request::class);
-        $request->setControllerVendorName($this->vendorName);
+        $request = $this->objectManager->get(\TYPO3\CMS\Extbase\Mvc\Request::class);
+        $configuration = $this->objectManager->get(\TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface::class)->getConfiguration(ConfigurationManagerInterface::CONFIGURATION_TYPE_FRAMEWORK);
+        $controllerAliasToClassMapping = [];
+        foreach ($configuration['controllerConfiguration'] as $controllerClassName => $controllerConfiguration) {
+          $controllerAliasToClassMapping[$controllerConfiguration['alias']] = $controllerConfiguration['className'];
+          $controllerClassToAliasMapping[$controllerConfiguration['className']] = $controllerConfiguration['alias'];
+        }
+        $request->setControllerAliasToClassNameMapping($controllerAliasToClassMapping);
         $request->setControllerExtensionName($this->extensionName);
         $request->setPluginName($this->pluginName);
         $request->setControllerName($this->controllerName);
         $request->setControllerActionName($this->actionName);
         $request->setArguments($this->arguments);
         
+        $request->setFormat("html");
         $request->setMethod($this->method); 
         //$request->setHmacVerified(TRUE);    // TODO: Doesn't work right now.
          
