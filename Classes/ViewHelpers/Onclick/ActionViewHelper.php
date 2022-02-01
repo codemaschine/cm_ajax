@@ -53,8 +53,8 @@ class ActionViewHelper extends AbstractAjaxViewHelper {
         $this->registerArgument('format', 'string', 'The requested format, e.g. ".html"', false, '');
         $this->registerArgument('linkAccessRestrictedPages', 'boolean', 'If set, links pointing to access restricted pages will still link to the page even though the page cannot be accessed.', false, false);
         $this->registerArgument('additionalParams', 'array', 'additional query parameters that won\'t be prefixed like $arguments (overrule $arguments)', false, array());
-        $this->registerArgument('absolute', 'boolean', 'If set, the URI of the rendered link is absolute', false, boolean);
-        $this->registerArgument('addQueryString', 'boolean', 'If set, the current query parameters will be kept in the URI', false, boolean);
+        $this->registerArgument('absolute', 'boolean', 'If set, the URI of the rendered link is absolute', false, false);
+        $this->registerArgument('addQueryString', 'boolean', 'If set, the current query parameters will be kept in the URI', false, false);
         $this->registerArgument('argumentsToBeExcludedFromQueryString', 'array', 'arguments to be removed from the URI. Only active if $addQueryString = TRUE', false, array());
         $this->registerArgument('return', 'boolean', 'Rendered link', false, false);
 	}
@@ -119,7 +119,34 @@ class ActionViewHelper extends AbstractAjaxViewHelper {
 	  $argumentsToBeExcludedFromQueryString = (array) $this->arguments['argumentsToBeExcludedFromQueryString'];
 	  $return = (boolean) $this->arguments['return'];
 	  
-	  $ajaxCall = AjaxBuilder::ajaxCall($this->configurationManager, $this->renderingContext->getControllerContext(), $action, $arguments, $includeFormData, $controller, $update, $append, $prepend, $updateJS, $error, $errorJS, $loading, $loadingText, $dataType, $ajaxAction, $extensionName, $pluginName, $pageUid, $pageType, $noCache, $noCacheHash, $section, $format, $linkAccessRestrictedPages, $additionalParams, $absolute, $addQueryString, $argumentsToBeExcludedFromQueryString, $return);
+		$ajaxCall = AjaxBuilder::ajaxCall($this->configurationManager, $this->renderingContext->getControllerContext(),
+			$action,
+			$arguments,
+			$includeFormData,
+			$controller,
+			$update, $append, $prepend,
+			$updateJS,
+			$error,
+			$errorJS,
+			$loading,
+			NULL,
+			"html",
+			$ajaxAction,
+			$extensionName,
+			$pluginName,
+			$pageUid,
+			$pageType,
+			$noCache,
+			$noCacheHash,
+			$section,
+			$format,
+			$linkAccessRestrictedPages,
+			$additionalParams,
+			$absolute,
+			$addQueryString,
+			$argumentsToBeExcludedFromQueryString,
+			$return);
+	  //$ajaxCall = AjaxBuilder::ajaxCall($this->configurationManager, $this->renderingContext->getControllerContext(), $action, $arguments, $includeFormData, $controller, $update, $append, $prepend, $updateJS, $error, $errorJS, $loading, $loadingText, $dataType, $ajaxAction, $extensionName, $pluginName, $pageUid, $pageType, $noCache, $noCacheHash, $section, $format, $linkAccessRestrictedPages, $additionalParams, $absolute, $addQueryString, $argumentsToBeExcludedFromQueryString, $return);
 	  
 		return $ajaxCall;
 	}

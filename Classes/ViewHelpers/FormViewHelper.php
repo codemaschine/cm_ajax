@@ -67,7 +67,10 @@ class FormViewHelper extends \TYPO3\CMS\Fluid\ViewHelpers\FormViewHelper {
     $this->configurationManager = $configurationManager;
   }
   
-  
+  /**
+	 * @var \TYPO3\CMS\Fluid\Core\Rendering\RenderingContext
+	 */
+	protected $renderingContext;
 
   /**
 	 * Initialize arguments.

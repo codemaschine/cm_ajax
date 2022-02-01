@@ -27,6 +27,11 @@ class ActionViewHelper extends \TYPO3Fluid\Fluid\Core\ViewHelper\AbstractViewHel
    * @var bool
    */
   protected $escapeOutput = false;
+
+  /**
+	 * @var \TYPO3\CMS\Fluid\Core\Rendering\RenderingContext
+	 */
+	protected $renderingContext;
   
   public function initializeArguments() {
     $this->registerArgument('action', 'string', 'Target action', false, null);
@@ -124,7 +129,33 @@ class ActionViewHelper extends \TYPO3Fluid\Fluid\Core\ViewHelper\AbstractViewHel
     $addQueryString = (boolean) $this->arguments['addQueryString'];
     $argumentsToBeExcludedFromQueryString = (array) $this->arguments['argumentsToBeExcludedFromQueryString'];
     
-    $ajaxCall = AjaxBuilder::ajaxCall($this->configurationManager, $this->renderingContext->getControllerContext(), $action, $arguments, $includeFormData, $controller, $update, $append, $prepend, $updateJS, $error, $errorJS, $loading, $loadingText, $dataType, $ajaxAction, $extensionName, $pluginName, $pageUid, $pageType, $noCache, $noCacheHash, $section, $format, $linkAccessRestrictedPages, $additionalParams, $absolute, $addQueryString, $argumentsToBeExcludedFromQueryString, false);
+    $ajaxCall = AjaxBuilder::ajaxCall($this->configurationManager, $this->renderingContext->getControllerContext(),
+      $action,
+      $arguments,
+      $includeFormData,
+      $controller,
+      $update, $append, $prepend,
+      $updateJS,
+      $error,
+      $errorJS,
+      $loading,
+      NULL,
+      "html",
+      $ajaxAction,
+      $extensionName,
+      $pluginName,
+      $pageUid,
+      $pageType,
+      $noCache,
+      $noCacheHash,
+      $section,
+      $format,
+      $linkAccessRestrictedPages,
+      $additionalParams,
+      $absolute,
+      $addQueryString,
+      $argumentsToBeExcludedFromQueryString);
+    //$ajaxCall = AjaxBuilder::ajaxCall($this->configurationManager, $this->renderingContext->getControllerContext(), $action, $arguments, $includeFormData, $controller, $update, $append, $prepend, $updateJS, $error, $errorJS, $loading, $loadingText, $dataType, $ajaxAction, $extensionName, $pluginName, $pageUid, $pageType, $noCache, $noCacheHash, $section, $format, $linkAccessRestrictedPages, $additionalParams, $absolute, $addQueryString, $argumentsToBeExcludedFromQueryString, false);
     
     return $ajaxCall;
   }

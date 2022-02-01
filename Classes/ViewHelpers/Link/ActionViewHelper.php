@@ -117,14 +117,14 @@ class ActionViewHelper extends AbstractAjaxViewHelper
         $pageType = (int) $this->arguments['pageType'];
         $noCache = (boolean) $this->arguments['noCache'];
         $noCacheHash = (boolean) $this->arguments['noCacheHash'];
-        $section = $this->arguments['section'];
-        $format = $this->arguments['format'];
+        $section = $this->arguments['section'] ?? '';
+        $format = $this->arguments['format'] ?? '';
         $linkAccessRestrictedPages = (boolean) $this->arguments['linkAccessRestrictedPages'];
         $additionalParams = (array) $this->arguments['additionalParams'];
         $absolute = (boolean) $this->arguments['absolute'];
         $addQueryString = (boolean) $this->arguments['addQueryString'];
         $argumentsToBeExcludedFromQueryString = (array) $this->arguments['argumentsToBeExcludedFromQueryString'];
-        $addQueryStringMethod = $this->arguments['addQueryStringMethod'];
+        $addQueryStringMethod = $this->arguments['addQueryStringMethod'] ?? '';
       
         $uriBuilder = $this->renderingContext->getControllerContext()->getUriBuilder();
         $uri = $uriBuilder
@@ -147,7 +147,33 @@ class ActionViewHelper extends AbstractAjaxViewHelper
         }
         $this->tag->addAttribute('href', $uri);
         
-        $ajaxCall = AjaxBuilder::ajaxCall($this->configurationManager, $this->renderingContext->getControllerContext(), $action, $arguments, $includeFormData, $controller, $update, $updateJS, $error, $errorJS, $loading, $loadingText, $dataType, $ajaxAction, $extensionName, $pluginName, $pageUid, $pageType, $noCache, $noCacheHash, $section, $format, $linkAccessRestrictedPages, $additionalParams, $absolute, $addQueryString, $argumentsToBeExcludedFromQueryString);
+        $ajaxCall = AjaxBuilder::ajaxCall($this->configurationManager, $this->renderingContext->getControllerContext(),
+            $action,
+            $arguments,
+            $includeFormData,
+            $controller,
+            $update, $append, $prepend,
+            $updateJS,
+            $error,
+            $errorJS,
+            $loading,
+            NULL,
+            "html",
+            $ajaxAction,
+            $extensionName,
+            $pluginName,
+            $pageUid,
+            $pageType,
+            $noCache,
+            $noCacheHash,
+            $section,
+            $format,
+            $linkAccessRestrictedPages,
+            $additionalParams,
+            $absolute,
+            $addQueryString,
+            $argumentsToBeExcludedFromQueryString);
+        //$ajaxCall = AjaxBuilder::ajaxCall($this->configurationManager, $this->renderingContext->getControllerContext(), $action, $arguments, $includeFormData, $controller, $update, $updateJS, $error, $errorJS, $loading, $loadingText, $dataType, $ajaxAction, $extensionName, $pluginName, $pageUid, $pageType, $noCache, $noCacheHash, $section, $format, $linkAccessRestrictedPages, $additionalParams, $absolute, $addQueryString, $argumentsToBeExcludedFromQueryString);
         
         $onclick = $this->tag->getAttribute('onclick');
         

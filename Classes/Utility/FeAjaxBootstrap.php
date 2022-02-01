@@ -9,6 +9,7 @@
 namespace TYPO3\CmAjax\Utility;
 
 use \TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Extbase\Annotation\Inject;
 use \TYPO3\CMS\Extbase\Service\TypoScriptService;
 use TYPO3\CMS\Frontend\Utility\EidUtility;
 
@@ -23,14 +24,15 @@ class FeAjaxBootstrap {
   protected $configuration;
   
   /**
-   * @var \array
+   * @var \TYPO3\CMS\Extbase\Core\Bootstrap
+   * @Inject
    */
   protected $bootstrap;
   
   /**
    * The main Method
    *
-   * @return \string
+   * @return string
    */
   public function run() {
     return $this->bootstrap->run( '', $this->configuration );
@@ -45,8 +47,8 @@ class FeAjaxBootstrap {
     /**
      * Gets the Ajax Call Parameters
      */
-    $ajax = \TYPO3\CMS\Core\Utility\GeneralUtility::_GP('request');
-    $pid = \TYPO3\CMS\Core\Utility\GeneralUtility::_GP('pid');
+    $ajax = GeneralUtility::_GP('request');
+    $pid = GeneralUtility::_GP('pid');
     
     /**
      * Set Vendor and Extension Name
@@ -75,11 +77,9 @@ class FeAjaxBootstrap {
       //GeneralUtility::devLog('Post: '.var_export($_POST, true), 'jdtest');
       
       
-      // create bootstrap
-      $this->bootstrap = new \TYPO3\CMS\Extbase\Core\Bootstrap();
       
       // get User
-      $feUserObj = \TYPO3\CMS\Frontend\Utility\EidUtility::initFeUser();
+      // $feUserObj = \TYPO3\CMS\Frontend\Utility\EidUtility::initFeUser();
       
       // set PID
       $pid = (GeneralUtility::_GET( 'id' )) ? GeneralUtility::_GET( 'id' ) : 1;
@@ -88,7 +88,7 @@ class FeAjaxBootstrap {
       $GLOBALS['TSFE'] = GeneralUtility::makeInstance( 'TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController', $TYPO3_CONF_VARS, $pid, 0, TRUE );
       $GLOBALS['TSFE']->set_no_cache();
       $GLOBALS['TSFE']->connectToDB();
-      $GLOBALS['TSFE']->fe_user = $feUserObj;
+      // $GLOBALS['TSFE']->fe_user = $feUserObj;
       $GLOBALS['TSFE']->id = $pid;
       $GLOBALS['TSFE']->determineId();
       // $GLOBALS['TSFE']->getCompressedTCarray();  // Deprecated!  // Full TCA is always loaded during bootstrap in FE, this method is obsolete.
@@ -97,11 +97,11 @@ class FeAjaxBootstrap {
       $GLOBALS['TSFE']->cObj = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer');
       //$GLOBALS['TSFE']->includeTCA();  // Deprecated! // since 6.1, will be removed in two versions. Obsolete in regular frontend, eid scripts should use \TYPO3\CMS\Frontend\Utility\EidUtility::initTCA()
       
-      EidUtility::initTCA();
-      EidUtility::initFeUser();
+      // EidUtility::initTCA();
+      // EidUtility::initFeUser();
       
       // Get Plugins TypoScript
-      $TypoScriptService = new \TYPO3\CMS\Extbase\Service\TypoScriptService();
+      $TypoScriptService = new \TYPO3\CMS\Core\TypoScript\TypoScriptService();
       
       if (!$GLOBALS['TSFE']->tmpl->setup['plugin.']['tx_'.strtolower($ajax['extensionName']).'.'])
         throw new \Exception('No TypoScript-Setup for Extension '.$ajax['extensionName'].' available. Forgotten to include Static TypoScript for this plugin?');
@@ -145,8 +145,11 @@ if ($TYPO3_CONF_VARS['SYS']['systemLocale']) {
   // do not set LC_NUMERIC, because float values are displayed wrong in frontend. Use ViewHelpers instead.
 }
 
-// make instance of bootstrap and run
-$eid = GeneralUtility::makeInstance( 'TYPO3\CmAjax\Utility\FeAjaxBootstrap', $TYPO3_CONF_VARS );
+/**
+ * make instance of bootstrap and run
+ * @var FeAjaxBootstrap
+ */
+$eid = GeneralUtility::makeInstance( FeAjaxBootstrap::class, $TYPO3_CONF_VARS );
 
 echo $eid->run();
 ?>

@@ -39,7 +39,7 @@ class ContentUidViewHelper extends \TYPO3Fluid\Fluid\Core\ViewHelper\AbstractVie
       $uid = $contentObjectData['uid'];
     } else {
       // this should work in every circumstance
-      $cObj = $this->configurationManager->getContentObjectRenderer();
+      $cObj = $this->configurationManager->getContentObject();
       $uid = $cObj->data['uid'];
     }
  

@@ -140,13 +140,21 @@ class BeDispatcherController {
         
         //t3lib_div::devLog(var_export($this->arguments, true), "cm_ajax");
          
-        
-        $bootstrap =  t3lib_div::makeInstance('TYPO3\\CMS\\Extbase\\Core\\Bootstrap'); //  t3lib_div::makeInstance('Tx_Extbase_Core_Bootstrap');  
+        /**
+         * @var \TYPO3\CMS\Extbase\Core\Bootstrap
+         */
+        $bootstrap = t3lib_div::makeInstance('TYPO3\\CMS\\Extbase\\Core\\Bootstrap'); //  t3lib_div::makeInstance('Tx_Extbase_Core_Bootstrap');  
         $bootstrap->initialize($configuration);
          
+        /**
+         * @var \TYPO3\CMS\Extbase\Object\ObjectManager
+         */
         $this->objectManager = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\\CMS\\Extbase\\Object\\ObjectManager');
         
         $request = $this->buildRequest();
+        /**
+         * @var \TYPO3\CMS\Extbase\Mvc\Response
+         */
         $response = $this->objectManager->get(\TYPO3\CMS\Extbase\Mvc\Response::class);
         
         $dispatcher = $this->objectManager->get(\TYPO3\CMS\Extbase\Mvc\Dispatcher::class);
@@ -182,7 +190,7 @@ class BeDispatcherController {
      */
     protected function buildRequest() {
         $request = $this->objectManager->get(\TYPO3\CMS\Extbase\Mvc\Request::class);
-        $configuration = $this->objectManager->get(\TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface::class)->getConfiguration(ConfigurationManagerInterface::CONFIGURATION_TYPE_FRAMEWORK);
+        $configuration = $this->objectManager->get(ConfigurationManagerInterface::class)->getConfiguration(ConfigurationManagerInterface::CONFIGURATION_TYPE_FRAMEWORK);
         $controllerAliasToClassMapping = [];
         foreach ($configuration['controllerConfiguration'] as $controllerClassName => $controllerConfiguration) {
           $controllerAliasToClassMapping[$controllerConfiguration['alias']] = $controllerConfiguration['className'];
@@ -245,7 +253,7 @@ class BeDispatcherController {
     protected function setRequestArgumentsFromJSON($request) {
         $requestArray = json_decode($request, true);
         if(is_array($requestArray)) {
-            $this->requestArguments = t3lib_div::array_merge_recursive_overrule($this->requestArguments, $requestArray);
+            $this->requestArguments = \TYPO3\CMS\Core\Utility\ArrayUtility::mergeRecursiveWithOverrule($this->requestArguments, $requestArray);
         }
     }
      

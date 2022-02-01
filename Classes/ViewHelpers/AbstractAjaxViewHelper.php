@@ -21,6 +21,11 @@ use \TYPO3\CMS\Core\Utility\GeneralUtility as t3lib_div;
  * @license http://www.gnu.org/licenses/lgpl.html GNU Lesser General Public License, version 3 or later
  */
 class AbstractAjaxViewHelper extends \TYPO3Fluid\Fluid\Core\ViewHelper\AbstractTagBasedViewHelper {
+
+	/**
+	 * @var \TYPO3\CMS\Fluid\Core\Rendering\RenderingContext
+	 */
+	protected $renderingContext;
   
   protected function ajaxCall($action = NULL, $arguments = array(), $includeFormData = false, $controller = NULL, $update = NULL, $updateJS = NULL, $error = NULL, $errorJS = NULL, $loading = NULL, $loadingText = NULL, $dataType = "html", $ajaxAction = NULL, $extensionName = NULL, $pluginName = NULL, $pageUid = NULL, $pageType = 0, $noCache = FALSE, $noCacheHash = FALSE, $section = '', $format = '', $linkAccessRestrictedPages = FALSE, array $additionalParams = array(), $absolute = FALSE, $addQueryString = FALSE, array $argumentsToBeExcludedFromQueryString = array(), $return = false) {
     if (TYPO3_MODE === 'FE') {
