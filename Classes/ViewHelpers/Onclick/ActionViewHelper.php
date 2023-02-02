@@ -13,7 +13,6 @@ namespace TYPO3\CmAjax\ViewHelpers\Onclick;
  * TABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General      *
  * Public License for more details.                                       *
  *                                                                        */
-use \TYPO3\CMS\Core\Utility\GeneralUtility as t3lib_div;
 use \TYPO3\CmAjax\ViewHelpers\AbstractAjaxViewHelper;
 use TYPO3\CmAjax\Utility\AjaxBuilder;
 use TYPO3\CMS\Extbase\Annotation\Inject;
@@ -28,7 +27,7 @@ class ActionViewHelper extends AbstractAjaxViewHelper {
 	 * @var \TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface
 	 * @Inject
 	 */
-	protected $configurationManager;
+	public $configurationManager;
 	
 	public function initializeArguments() {
         $this->registerArgument('action', 'string', 'Target action', false, null);

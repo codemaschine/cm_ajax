@@ -27,7 +27,7 @@ class FeAjaxBootstrap {
    * @var \TYPO3\CMS\Extbase\Core\Bootstrap
    * @Inject
    */
-  protected $bootstrap;
+  public $bootstrap;
   
   /**
    * The main Method
@@ -87,12 +87,12 @@ class FeAjaxBootstrap {
       // Create and init Frontend
       $GLOBALS['TSFE'] = GeneralUtility::makeInstance( 'TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController', $TYPO3_CONF_VARS, $pid, 0, TRUE );
       $GLOBALS['TSFE']->set_no_cache();
-      $GLOBALS['TSFE']->connectToDB();
+      // $GLOBALS['TSFE']->connectToDB();
       // $GLOBALS['TSFE']->fe_user = $feUserObj;
       $GLOBALS['TSFE']->id = $pid;
       $GLOBALS['TSFE']->determineId();
       // $GLOBALS['TSFE']->getCompressedTCarray();  // Deprecated!  // Full TCA is always loaded during bootstrap in FE, this method is obsolete.
-      $GLOBALS['TSFE']->initTemplate();
+      // $GLOBALS['TSFE']->initTemplate();
       $GLOBALS['TSFE']->getConfigArray();
       $GLOBALS['TSFE']->cObj = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer');
       //$GLOBALS['TSFE']->includeTCA();  // Deprecated! // since 6.1, will be removed in two versions. Obsolete in regular frontend, eid scripts should use \TYPO3\CMS\Frontend\Utility\EidUtility::initTCA()

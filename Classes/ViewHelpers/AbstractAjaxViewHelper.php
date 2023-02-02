@@ -13,7 +13,8 @@ namespace TYPO3\CmAjax\ViewHelpers;
  * TABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General      *
  * Public License for more details.                                       *
  *                                                                        */
-use \TYPO3\CMS\Core\Utility\GeneralUtility as t3lib_div;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Extbase\Mvc\Web\Routing\UriBuilder;
 
 /**
  * A view helper for creating remote Uri to extbase actions in onclick eventhandlers
@@ -29,12 +30,12 @@ class AbstractAjaxViewHelper extends \TYPO3Fluid\Fluid\Core\ViewHelper\AbstractT
   
   protected function ajaxCall($action = NULL, $arguments = array(), $includeFormData = false, $controller = NULL, $update = NULL, $updateJS = NULL, $error = NULL, $errorJS = NULL, $loading = NULL, $loadingText = NULL, $dataType = "html", $ajaxAction = NULL, $extensionName = NULL, $pluginName = NULL, $pageUid = NULL, $pageType = 0, $noCache = FALSE, $noCacheHash = FALSE, $section = '', $format = '', $linkAccessRestrictedPages = FALSE, array $additionalParams = array(), $absolute = FALSE, $addQueryString = FALSE, array $argumentsToBeExcludedFromQueryString = array(), $return = false) {
     if (TYPO3_MODE === 'FE') {
-      $uriBuilder = $this->renderingContext->getControllerContext()->getUriBuilder();
+      $uriBuilder = GeneralUtility::makeInstance(UriBuilder::class);
   		$remoteUri = $uriBuilder
   			->reset()
   			->setTargetPageUid($pageUid)
   			->setNoCache($noCache)
-  			->setUseCacheHash(!$noCacheHash)
+  			// ->setUseCacheHash(!$noCacheHash)
   			->setSection($section)
   			->setFormat($format)
   			->setLinkAccessRestrictedPages($linkAccessRestrictedPages)
@@ -63,7 +64,7 @@ class AbstractAjaxViewHelper extends \TYPO3Fluid\Fluid\Core\ViewHelper\AbstractT
   		$ajaxCall.= ", dataType: '$dataType' }); return ".($return ? "true" : "false").";";
 	  }
     else {
-      $request = $this->controllerContext->getRequest();
+      $request = $this->renderingContext->getRequest();
       
       if(!$extensionName)
         $extensionName = $request->getControllerExtensionName();

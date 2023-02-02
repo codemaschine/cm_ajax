@@ -67,7 +67,7 @@ class ActionViewHelper extends \TYPO3Fluid\Fluid\Core\ViewHelper\AbstractViewHel
    * @var \TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface
    * @Inject
    */
-  protected $configurationManager;
+  public $configurationManager;
   
   /**
    * @param string $action Target action

@@ -20,8 +20,9 @@ namespace TYPO3\CmAjax\ViewHelpers;
  *                                                                        *
  * The TYPO3 project - inspiring people to share!                         *
  *                                                                        */
-use \TYPO3\CMS\Core\Utility\GeneralUtility as t3lib_div;
-use \TYPO3\CmAjax\Utility\AjaxBuilder;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CmAjax\Utility\AjaxBuilder;
+use TYPO3\CMS\Core\Context\Context;
 
 /**
  * Form view helper. Generates a <form> Tag.
@@ -143,8 +144,9 @@ class FormViewHelper extends \TYPO3\CMS\Fluid\ViewHelpers\FormViewHelper {
 	 */
   protected function renderHiddenReferrerFields()
   {
+    $languageAspect = GeneralUtility::makeInstance(Context::class)->getAspect('language');
     $result = parent::renderHiddenReferrerFields();
-    $result .= '<input type="hidden" name="L" value="' . $GLOBALS['TSFE']->sys_language_uid . '" />' . LF;
+    $result .= '<input type="hidden" name="L" value="' . $languageAspect->getId() . '" />' . LF;
 
     return $result;
   }

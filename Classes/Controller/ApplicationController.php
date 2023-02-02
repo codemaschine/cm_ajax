@@ -42,7 +42,7 @@ class ApplicationController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionCont
 	* @var \TYPO3\CMS\Extbase\Persistence\PersistenceManagerInterface
 	* @Inject
 	*/
-	protected $persistenceManager;
+	public $persistenceManager;
 	
 	
 	public function isXhr() {
@@ -55,10 +55,6 @@ class ApplicationController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionCont
 	
 	public function persistAll() {
 		$this->persistenceManager->persistAll();
-	}
-	
-	public function setStatusCode($status = 200) {
-		$this->response->setStatus($status);
 	}
 	
 }

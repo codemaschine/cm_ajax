@@ -152,28 +152,15 @@ class BeDispatcherController {
         $this->objectManager = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\\CMS\\Extbase\\Object\\ObjectManager');
         
         $request = $this->buildRequest();
-        /**
-         * @var \TYPO3\CMS\Extbase\Mvc\Response
-         */
-        $response = $this->objectManager->get(\TYPO3\CMS\Extbase\Mvc\Response::class);
         
         $dispatcher = $this->objectManager->get(\TYPO3\CMS\Extbase\Mvc\Dispatcher::class);
-        $dispatcher->dispatch($request, $response);
+        $response = $dispatcher->dispatch($request);
         
-        $response->setHeader('Content-Type','text/html; charset=UTF-8');
-        $response->sendHeaders();
+        $response->withAddedHeader('Content-Type', 'text/html; charset=UTF-8');
+        // $response->sendHeaders();
          
         $this->cleanShutDown();
-        $responsePSR = new \TYPO3\CMS\Core\Http\Response(
-            'php://temp',
-            $response->getStatusCode(),
-            $response->getUnpreparedHeaders()
-          );
-        $content = $response->getContent();
-        if ($content !== null) {
-          $responsePSR->getBody()->write($content);
-        }
-        return $responsePSR;
+        return $response;
     }
  
      
@@ -204,7 +191,7 @@ class BeDispatcherController {
         $request->setArguments($this->arguments);
         
         $request->setFormat("html");
-        $request->setMethod($this->method); 
+        // $request->setMethod($this->method);
         //$request->setHmacVerified(TRUE);    // TODO: Doesn't work right now.
          
         return $request;

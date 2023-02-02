@@ -16,6 +16,8 @@ namespace TYPO3\CmAjax\ViewHelpers\Link;
 
 use \TYPO3\CmAjax\ViewHelpers\AbstractAjaxViewHelper;
 use \TYPO3\CmAjax\Utility\AjaxBuilder;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Extbase\Mvc\Web\Routing\UriBuilder;
 
 /**
  * A ViewHelper for creating links to extbase actions.
@@ -124,15 +126,15 @@ class ActionViewHelper extends AbstractAjaxViewHelper
         $absolute = (boolean) $this->arguments['absolute'];
         $addQueryString = (boolean) $this->arguments['addQueryString'];
         $argumentsToBeExcludedFromQueryString = (array) $this->arguments['argumentsToBeExcludedFromQueryString'];
-        $addQueryStringMethod = $this->arguments['addQueryStringMethod'] ?? '';
+        // $addQueryStringMethod = $this->arguments['addQueryStringMethod'] ?? '';
       
-        $uriBuilder = $this->renderingContext->getControllerContext()->getUriBuilder();
+        $uriBuilder = GeneralUtility::makeInstance(UriBuilder::class);
         $uri = $uriBuilder
             ->reset()
             ->setTargetPageUid($pageUid)
             ->setTargetPageType($pageType)
             ->setNoCache($noCache)
-            ->setUseCacheHash(!$noCacheHash)
+            // ->setUseCacheHash(!$noCacheHash)
             ->setSection($section)
             ->setFormat($format)
             ->setLinkAccessRestrictedPages($linkAccessRestrictedPages)
@@ -140,7 +142,7 @@ class ActionViewHelper extends AbstractAjaxViewHelper
             ->setCreateAbsoluteUri($absolute)
             ->setAddQueryString($addQueryString)
             ->setArgumentsToBeExcludedFromQueryString($argumentsToBeExcludedFromQueryString)
-            ->setAddQueryStringMethod($addQueryStringMethod)
+            // ->setAddQueryStringMethod($addQueryStringMethod)
             ->uriFor($action, $arguments, $controller, $extensionName, $pluginName);
         if ($uri === '') {
             return $this->renderChildren();
