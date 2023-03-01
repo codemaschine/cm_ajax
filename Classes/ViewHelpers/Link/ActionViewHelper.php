@@ -128,7 +128,7 @@ class ActionViewHelper extends AbstractAjaxViewHelper
         $argumentsToBeExcludedFromQueryString = (array) $this->arguments['argumentsToBeExcludedFromQueryString'];
         // $addQueryStringMethod = $this->arguments['addQueryStringMethod'] ?? '';
       
-        $uriBuilder = GeneralUtility::makeInstance(UriBuilder::class);
+        $uriBuilder = $this->renderingContext->getControllerContext()->getUriBuilder();
         $uri = $uriBuilder
             ->reset()
             ->setTargetPageUid($pageUid)
