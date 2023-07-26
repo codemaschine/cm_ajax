@@ -46,7 +46,7 @@ class ApplicationController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionCont
 	
 	
 	public function isXhr() {
-		return $_SERVER['HTTP_X_REQUESTED_WITH'] == 'XMLHttpRequest';
+		return !empty($_SERVER['HTTP_X_REQUESTED_WITH']) && $_SERVER['HTTP_X_REQUESTED_WITH'] == 'XMLHttpRequest';
 	}
 	
 	public function isAjax() {

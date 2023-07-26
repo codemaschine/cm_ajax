@@ -15,7 +15,7 @@ class IsXhrViewHelper extends \TYPO3Fluid\Fluid\Core\ViewHelper\AbstractViewHelp
    * @return string
    */
   public function render() {
-    return $_SERVER['HTTP_X_REQUESTED_WITH'] == 'XMLHttpRequest' ? 'true' : null;
+    return !empty($_SERVER['HTTP_X_REQUESTED_WITH']) && $_SERVER['HTTP_X_REQUESTED_WITH'] == 'XMLHttpRequest' ? 'true' : null;
   }
 
 }

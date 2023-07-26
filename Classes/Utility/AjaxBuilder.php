@@ -95,7 +95,7 @@ class AjaxBuilder {
     	
 
 
-    	if ($_SERVER['HTTP_X_REQUESTED_WITH'] != 'XMLHttpRequest') {
+    	if (empty($_SERVER['HTTP_X_REQUESTED_WITH']) || $_SERVER['HTTP_X_REQUESTED_WITH'] != 'XMLHttpRequest') {
     		$cObj = $configurationManager->getContentObject();
     		//t3lib_div::devLog('hierrrrrrr'.$cObj->data['pages'].'-', 'jdtest');
     		if ($cObj) {
